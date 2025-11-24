@@ -4,6 +4,7 @@ then save it as an external SVG file.
 */
 
 const fs = require("fs");
+
 process.chdir(__dirname);
 
 const colors = [
@@ -32,10 +33,10 @@ the end and top points of the outermost curve are:
 
 x0 = strokeWidth / 2
 y0 = canvasHeight
-x1 = width - strokeWidth / 2
-y1 = height - strokeWidth / 2
-xtop = height - strokeWidth / 2
-ytop = 0
+x1 = canvasWidth - strokeWidth / 2
+y1 = y0
+xtop = canvasWidth / 2
+ytop = strokeWidth / 2
 
 Each curve is a separate <path> element with 2 Bezeier curves.
 The height of the outmost curve is one-half the distance between
@@ -44,12 +45,19 @@ the width of the outmost curve: height = width / 2
 The outer Bezier curve is defined by 3 commands:
 
 1. M x0 y0 (to move to the start point), where
+   M is the move command
+   x0 is the x coordinate of the start point
+   y0 is the y coordinate of the start point
 
 2. C cx1, cy1, cx2, cy2, xtop, ytop where
+   C is the curve command
    the first control point is cx1 = x0, cy1 = canvasHeight - height / 2
    the second control point is cx2 = (x1 - x0) / 4, cy2 = xtop
+
 3. S cx3, cy3, x1, y1 where
-   the first control point is cx3 = (x1 - x0) / 2, cy3 = cy1
+   S is the smooth curve command (the first control point is a reflection of the 
+   control point used on the other side to keep the slope constant)
+   the next control point is cx3 = x1, cy3 = cy1
 
 There is no fill for any of the curves, and the curve is not closed (no Z command).
 The curve is then repeated for each of the other colors.
@@ -64,7 +72,7 @@ const height = width / 2;
 let x0 = strokeWidth / 2;
 let y0 = canvasHeight;
 let x1 = canvasWidth - strokeWidth / 2;
-let y1 = canvasHeight;
+let y1 = y0;
 let xtop = canvasWidth / 2;
 let ytop = strokeWidth / 2;
 let cx1 = x0;
@@ -75,9 +83,9 @@ let cx3 = x1;
 let cy3 = cy1;
 
 let outerCurve = [
-  `    M ${x0} ${y0}`,
-  `    C ${cx1} ${cy1}, ${cx2} ${cy2}, ${xtop} ${ytop}`,
-  `    S ${cx3} ${cy3}, ${x1} ${y1}`,
+  `      M ${x0} ${y0}`,
+  `      C ${cx1} ${cy1}, ${cx2} ${cy2}, ${xtop} ${ytop}`,
+  `      S ${cx3} ${cy3}, ${x1} ${y1}`,
 ].join("\n");
 
 const pathData = [outerCurve];
@@ -98,9 +106,9 @@ cy3 = cy1
 */
 for (let i = 0; i < numColors - 1; i++) {
   x0 += strokeWidth;
-  y0 = y0;
+  // y0 = y0;
   x1 -= strokeWidth;
-  y1 = y1;
+  // y1 = y1;
   xtop = xtop;
   ytop += strokeWidth;
   cx1 = x0;
@@ -111,9 +119,9 @@ for (let i = 0; i < numColors - 1; i++) {
   cy3 = cy1;
 
   let innerCurve = [
-    `    M ${x0} ${y0}`,
-    `    C ${cx1} ${cy1}, ${cx2} ${cy2}, ${xtop} ${ytop}`,
-    `    S ${cx3} ${cy3}, ${x1} ${y1}`,
+    `      M ${x0} ${y0}`,
+    `      C ${cx1} ${cy1}, ${cx2} ${cy2}, ${xtop} ${ytop}`,
+    `      S ${cx3} ${cy3}, ${x1} ${y1}`,
   ].join("\n");
 
   pathData.push(innerCurve);
@@ -131,20 +139,26 @@ let svg = `<svg
   stroke-width="${strokeWidth}"
   stroke-linecap="square"
   xml:space="preserve"
- >\n`;
+>\n`;
+/*
+ Using a pathLength of 100 allows the stroke-dasharray and stroke-dashoffset 
+ to be set as a percentage of the length of the path in the keyframe animation.
+ */
+const pathLength = 100;
 pathData.forEach((d, i) => {
-  svg += `<path 
-  class="path-${i}"
-  stroke="${colors[i]}" 
-  stroke-width="${strokeWidth}"
-  d="
+  svg += `  <path 
+    class="path-${i}"
+    stroke="${colors[i]}" 
+    stroke-width="${strokeWidth}"
+    pathLength="${pathLength}"
+    d="
 ${d}
-  " 
-/>\n`;
+    " 
+  />\n`;
 });
 svg += "</svg>";
 const xml = `<?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/css" href="./svg.css" ?>`;
+<?xml-stylesheet type="text/css" href="./svg.css" ?>\n`;
 const fileName = `rainbow-${canvasWidth}x${canvasHeight}.svg`;
 
 fs.writeFileSync(fileName, xml.concat(svg));
