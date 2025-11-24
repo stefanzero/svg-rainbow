@@ -1,11 +1,12 @@
 /*
 Node program to create an arch of bezeier curves to create a rainbow,
 then save it as an external SVG file.
+
+by Stefan Musarra
+https://github.com/stefanzero/svg-rainbow
 */
 
 const fs = require("fs");
-
-process.chdir(__dirname);
 
 const colors = [
   "#ff0000",
@@ -19,10 +20,10 @@ const colors = [
 const numColors = colors.length;
 const strokeWidth = 20;
 const canvasWidth = 1000;
-const canvasHeight = 500;
+const canvasHeight = canvasWidth / 2;
 
 /*
-Note: endpoint of the outermost curve must have a padding of one-half the
+The endpoints of the outermost curve must have a padding of one-half the
 stroke width, to prevent it from overflowing the canvas.
 canvasHeight = canvasWidth / 2
 width = canvasWidth - strokeWidth
@@ -64,7 +65,7 @@ The curve is then repeated for each of the other colors.
 */
 
 /* 
-First, caclculate the values for the outermost curve, and then loop
+First, calculate the path data for the outermost curve, and then loop
 through the other colors.
 */
 const width = canvasWidth - strokeWidth;
@@ -118,7 +119,7 @@ for (let i = 0; i < numColors - 1; i++) {
   cx3 = x1;
   cy3 = cy1;
 
-  let innerCurve = [
+  const innerCurve = [
     `      M ${x0} ${y0}`,
     `      C ${cx1} ${cy1}, ${cx2} ${cy2}, ${xtop} ${ytop}`,
     `      S ${cx3} ${cy3}, ${x1} ${y1}`,
@@ -127,6 +128,9 @@ for (let i = 0; i < numColors - 1; i++) {
   pathData.push(innerCurve);
 }
 
+/*
+Build the svg string
+*/
 let svg = `<svg 
   xmlns="http://www.w3.org/2000/svg"
   x0="0px"
@@ -140,10 +144,12 @@ let svg = `<svg
   stroke-linecap="square"
   xml:space="preserve"
 >\n`;
+
 /*
- Using a pathLength of 100 allows the stroke-dasharray and stroke-dashoffset 
- to be set as a percentage of the length of the path in the keyframe animation.
- */
+Append the <path> elements.
+Using a pathLength of 100 allows the stroke-dasharray and stroke-dashoffset 
+to be set as a percentage of the length of the path in the keyframe animation.
+*/
 const pathLength = 100;
 pathData.forEach((d, i) => {
   svg += `  <path 
@@ -156,9 +162,20 @@ ${d}
     " 
   />\n`;
 });
+/*
+Close the svg
+*/
 svg += "</svg>";
+
+/*
+Allow the svg to use the stylesheet svg.css
+*/
 const xml = `<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/css" href="./svg.css" ?>\n`;
-const fileName = `rainbow-${canvasWidth}x${canvasHeight}.svg`;
 
+/*
+Write the svg to a file
+*/
+process.chdir(__dirname);
+const fileName = `rainbow-${canvasWidth}x${canvasHeight}.svg`;
 fs.writeFileSync(fileName, xml.concat(svg));

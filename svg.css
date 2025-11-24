@@ -1,0 +1,17 @@
+path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation-name: cycle;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+@keyframes cycle {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

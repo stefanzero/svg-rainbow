@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="og:title" content="Rainbow SVG">
+    <meta
+      name="og:description"
+      content="SVG created by Node program with CSS animation"
+    >
+    <meta
+      name="description"
+      content="SVG created by Node program with CSS animation"
+    >
+    <meta
+      name="og:image"
+      content="https://stefanzero.github.io/svg-rainbow/svg-rainbow-webpage.png"
+    >
+    <meta name="og:url" content="https://stefanzero.github.io/svg-rainbow/">
+    <meta
+      property="og:image:alt"
+      content="SVG created by Node program with CSS animation"
+    >
+    <meta property="og:type" content="article">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    >
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cherry+Cream+Soda&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="svg.css">
+  </head>
+  <body>
+    <header>
+      <!-- <div class="faded-rainbow"></div> -->
+      <!-- <div class="overlay"> -->
+      <h1>Animated SVG Rainbow</h1>
+      <!-- </div> -->
+    </header>
+    <main>
+      <article>
+        <figure>
+          <object type="image/svg+xml" data="rainbow-1000x500.svg"></object>
+          <figcaption>
+            SVG created by Node program with CSS animation
+          </figcaption>
+        </figure>
+        <section>
+          <!-- <figcaption>stroke-dashoffset is alternated from 100 to 0</figcaption> -->
+          <h2>Project Overview</h2>
+          <h3>Technologies</h3>
+          <ul>
+            <li>Node</li>
+            <li>SVG</li>
+            <li>HTML</li>
+            <li>CSS</li>
+          </ul>
+          <h3>Description</h3>
+          <p>
+            This
+            <a href="https://github.com/stefanzero/svg-rainbow" target="_blank"
+              >GitHub project</a
+            >
+            creates an SVG file to represent a rainbow, and demonstrates how to
+            apply a CSS keyframe animation to a SVG.
+          </p>
+          <h3>Node Program</h3>
+          <ul>
+            <li>
+              Program Inputs:
+              <ul>
+                <li>width of SVG</li>
+                <li>
+                  the height is automatically set to one half of the width
+                </li>
+                <li>an array of colors for the rainbow</li>
+                <li>the stroke width for each curved path</li>
+              </ul>
+            </li>
+            <li>
+              Program Outputs:
+              <ul>
+                <li>An SVG file that contains XML markup and an svg element</li>
+                <li>
+                  The XML file specifies a link to an external CSS file svg.css
+                </li>
+                <li>
+                  The children of the svg element are a series of path elements
+                </li>
+                <li>
+                  Each path element has a path data attribute that specifies a
+                  Bezier curve
+                </li>
+                <li>Each Bezier curve has 3 commands</li>
+                <ul>
+                  <li>M: move to the starting point</li>
+                  <li>
+                    C: a Bezier curve with 2 control points and an end point
+                  </li>
+                  <li>
+                    S: a smooth Bezier curve with 1 control point and end point.
+                    A smooth curve is a continuation of the previous curve, so
+                    the first control point is a reflection of the previous
+                    control point and does not need to be specified.
+                  </li>
+                </ul>
+                <li>
+                  Each path element has a stroke-width attribute that specifies
+                  the width
+                </li>
+                <li>
+                  The paths have the pathLength attribute set to 100 which
+                  allows CSS rules to animate the stroke-dashoffset
+                </li>
+                <li>The paths have no fill attribute</li>
+                <li>The paths are not closed and terminate at the end point</li>
+              </ul>
+            </li>
+          </ul>
+          <h3>HTML</h3>
+          <ul>
+            <li>This web page is found in the file index.html</li>
+            <li>
+              An object element is used to display the SVG file in the web page,
+              since this allows the SVG to be styled with CSS
+            </li>
+            <li>
+              The object element has a type attribute set to
+              <code>image/svg+xml</code> and data attribute set to the name of
+              the SVG file <code>rainbow-1000x500.svg</code>
+            </li>
+          </ul>
+          <h3>CSS</h3>
+          <p>
+            The file <a href="svg.css" target="_blank">svg.css</a> is used to
+            style the SVG
+          </p>
+          <ul>
+            <li>
+              A CSS rule for all path elements specifies a stroke-dasharray =
+              100
+            </li>
+            <li>
+              The stroke-dashoffset is also set to 100. This cause the dash to
+              start at the end of the path, so the stroke displays the blank
+              part of the dash.
+            </li>
+            <li>
+              A CSS rule for all path elements specifies an animation which
+              changes the stroke-dashoffset from 100 to 0
+            </li>
+            <li>
+              The animation has properties for the duration, timing function,
+              direction, and iteration count
+            </li>
+            <li>The duration is set to 10 seconds</li>
+            <li>
+              The timing function is set to ease-in-out, which changes the speed
+              of the animation to be the slowest at the beginning and the end,
+              and fasted in the middle
+            </li>
+            <li>
+              The direction is set to alternate, which causes the animation to
+              alternate between forward and reverse
+            </li>
+            <li>
+              The iteration count is set to infinite, which causes the animation
+              to repeat indefinitely
+            </li>
+          </ul>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <ul>
+        <li>
+          <a href="https://github.com/stefanzero/svg-rainbow" target="_blank"
+            >GitHub</a
+          >
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/stefan-musarra-3bbaa952/" target="_blank"
+            >LinkedIn</a
+          >
+        </li>
+        <li> &copy; 2025 Stefan Musarra. All rights reserved.</li>
+    </footer>
+  </body>
+</html>
